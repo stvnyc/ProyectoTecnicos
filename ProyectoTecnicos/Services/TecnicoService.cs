@@ -43,7 +43,8 @@ public class TecnicoService
     public async Task<bool> Eliminar(int id)
     {
         var tecnicos = await _context.Tecnicos
-            .Where(t => t.TecnicoId == id).ExecuteDeleteAsync();
+            .Where(t => t.TecnicoId == id)
+            .ExecuteDeleteAsync();
         return tecnicos > 0;
     }
 
