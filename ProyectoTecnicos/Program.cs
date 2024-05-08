@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProyectoTecnicos.Components;
 using ProyectoTecnicos.DAL;
+using ProyectoTecnicos.Services;
 
 namespace ProyectoTecnicos;
 
@@ -19,6 +20,8 @@ public class Program
 
         //Agregamos el contexto al builder
         builder.Services.AddDbContext<Contexto>(Options => Options.UseSqlite(ConStr));
+
+        builder.Services.AddScoped<TecnicoService>();
 
         var app = builder.Build();
 
