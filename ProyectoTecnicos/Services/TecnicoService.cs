@@ -28,12 +28,19 @@ public class TecnicoService
 
     private async Task<bool> Modificar(Tecnicos tecnico)
     {
-        _context.Update(tecnico);
-        return await _context.SaveChangesAsync() > 0;
+        _context.Tecnicos.Update(tecnico);
+        var modificado = await _context.SaveChangesAsync() > 0;
+        _context.Entry(tecnico).State = EntityState.Detached;
+        return modificado;
     }
 
     public async Task<bool> Guardar(Tecnicos tecnico)
     {
+        if (_context.Tecnicos!.Any(t => t.Nombres!.ToLower().Replace(" ", "") == tecnico.Nombres!.ToLower().Replace(" ", "")
+        && t.TecnicoId != tecnico.TecnicoId))
+        {
+            return false;
+        }
         if (!await Existe(tecnico.TecnicoId))
             return await Insertar(tecnico);
         else
@@ -55,7 +62,7 @@ public class TecnicoService
             .FirstOrDefaultAsync(t => t.TecnicoId == id);
     }
 
-    public List<Tecnicos> Listar(Expression<Func<Tecnicos, bool>> criterio)
+    public async Task<List<Tecnicos>> Listar(Expression<Func<Tecnicos, bool>> criterio)
     {
         return _context.Tecnicos
             .AsNoTracking()
