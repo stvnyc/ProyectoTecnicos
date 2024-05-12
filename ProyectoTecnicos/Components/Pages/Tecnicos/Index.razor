@@ -1,0 +1,84 @@
+﻿@page "/Tecnico/IndexTec"
+
+@inject TecnicoService tecnicoService
+@inject NavigationManager Navigation
+
+@rendermode InteractiveServer
+
+<PageTitle>T&eacute;cnico Index</PageTitle>
+<div class="container">
+    <div class="shadow-lg">
+        @*Header*@
+        <div class="card-header text-center">
+            <h3><strong>Listado de T&eacute;cnicos</strong></h3>
+            <div class="text-end">
+                <button type="button" class="btn btn-outline-primary bi bi-clipboard-plus" @onclick="Crear"> Crear</button>
+            </div>
+        </div>
+
+        @*Body*@
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>T&eacute;cnicoId</th>
+                        <th>Nombres</th>
+                        <th>SueldoHora</th>
+                        <th>Editar</th>
+                        <th>Ver</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var tecnicos in tecnico)
+                    {
+                        <tr>
+                            <td>@tecnicos.TecnicoId</td>
+                            <td>@tecnicos.Nombres</td>
+                            <td>@tecnicos.SueldoHora</td>
+                            <td><button type="button" class="btn btn-outline-warning bi bi-pen" @onclick="()=>Editar(tecnicos.TecnicoId)"></button></td>
+                            <td><button type="button" class="btn btn-outline-info bi bi-eye" @onclick="()=>Detalle(tecnicos.TecnicoId)"></button></td>
+                            <td><button type="button" class="btn btn-outline-danger bi bi-trash" @onclick="()=>Eliminar(tecnicos.TecnicoId)"></button></td>
+                            
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @*Footer*@
+        <div class="card-footer">
+            <p><strong>Total de t&eacute;cnicos: @tecnico.Count()</strong></p>
+        </div>
+    </div>
+</div>
+
+@code {
+    public List<Tecnicos> tecnico = new List<Tecnicos>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(200);
+        tecnico = await tecnicoService.Listar(t => true);
+    }
+
+    public void Crear()
+    {
+        Navigation.NavigateTo("/Tecnico/CreateTec");
+    }
+
+    public void Editar(int id)
+    {
+        Navigation.NavigateTo($"/Tecnico/EditTec/{id}");
+    }
+    
+    public void Detalle(int id)
+    {
+        Navigation.NavigateTo($"/Tecnico/DetailTec/{id}");
+    }
+    
+    public void Eliminar(int id)
+    {
+        Navigation.NavigateTo($"/Tecnico/DeleteTec/{id}");
+    }
+}
