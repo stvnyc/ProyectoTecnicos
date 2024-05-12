@@ -1,0 +1,90 @@
+﻿@page "/Tecnico/CreateTec"
+@page "/Tecnico/CreateTec/{TecnicoId:int}"
+
+@inject TecnicoService tecnicoService
+@inject NavigationManager Navigation
+
+@rendermode InteractiveServer
+
+<PageTitle>T&eacute;cnico Create</PageTitle>
+<EditForm Model="tecnico" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator/>
+    <div class="container">
+        <div class="shadow-lg">
+            @*Header*@
+            <div class="card-header text-center">
+                <h3><strong>Crear nuevo T&eacute;cnico</strong></h3>
+            </div>
+
+            @*Body*@
+            <div class="card-body">
+                @*ID*@
+                <label class="form-label">T&eacute;cnico Id</label>
+                <InputNumber class="form-control" @bind-Value="tecnico.TecnicoId"></InputNumber>
+
+                @*Nombres*@
+                <label class="form-label">Nombres</label>
+                <InputText class="form-control" @bind-Value="tecnico.Nombres"></InputText>
+                <ValidationMessage For="(()=> tecnico.Nombres)"/>
+
+                @*SueldoHora*@
+                <label class="form-label">SueldoHora</label>
+                <InputNumber class="form-control" @bind-Value="tecnico.SueldoHora"></InputNumber>
+                <ValidationMessage For="(()=> tecnico.SueldoHora)" />
+
+            </div>
+
+            @*Footer*@
+            <div class="card-footer">
+                <button type="button" class="btn btn-outline-warning bi bi-arrow-return-left" @onclick="Volver"> Volver</button>
+                <button type="submit" class="btn btn-outline-success bi bi-clipboard-plus"> Crear</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int TecnicoId { get; set; }
+
+    public Tecnicos tecnico { get; set; } = new Tecnicos();
+    private bool Existe = false;
+
+    public void Nuevo()
+    {
+        tecnico = new Tecnicos();
+        Existe = false;
+    }
+
+    public async Task Guardar()
+    {
+        if (await Validar())
+        {
+            return;
+        }
+
+        var guardo = await tecnicoService.Guardar(tecnico);
+        if (guardo)
+        {
+            Nuevo();
+        }
+    }
+
+    public async Task Eliminar()
+    {
+        var eliminado = await tecnicoService.Eliminar(tecnico.TecnicoId);
+        Nuevo();
+    }
+
+    public async Task<bool> Validar()
+    {
+        var listaTecnicos = await tecnicoService.Listar(t => t.Nombres.ToLower() == tecnico.Nombres.ToLower() && t.TecnicoId != tecnico.TecnicoId);
+        Existe = listaTecnicos.Any();
+        return Existe;
+    }
+
+    public void Volver()
+    {
+        Navigation.NavigateTo("/Tecnico/IndexTec");
+    }
+}
