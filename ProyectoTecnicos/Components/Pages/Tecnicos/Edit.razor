@@ -20,7 +20,7 @@
                     <label for="TecnicoId" class="form-label">T&eacute;cnicoId:</label>
                     <div class="input-group">
                         <div style="width: 40%; height: 1em;">
-                            <InputNumber @bind-Value="Tecnico.TecnicoId" class="form-control" style="font-size: 0.8em;" aria-describedby="BotonBuscar" />
+                            <InputNumber @bind-Value="Tecnico.TecnicoId" class="form-control" style="font-size: 0.8em;" aria-describedby="BotonBuscar" readonly/>
                         </div>
                     </div>
                 </div>
@@ -47,6 +47,7 @@
                 <button type="submit" class="btn btn-guardar bi bi-check-lg"> Guardar</button>
             </div>
         </div>
+        @Mensaje
     </div>
 </EditForm>
 
@@ -55,6 +56,7 @@
     public int TecnicoId { get; set; }
 
     public Tecnicos Tecnico { get; set; } = new Tecnicos();
+    public string Mensaje { get; set; } = string.Empty;
     private bool Existe = false;
 
     protected override async Task OnInitializedAsync()
@@ -88,15 +90,16 @@
 
     public async Task<bool> Validar()
     {
-        var listaTecnicos = await tecnicoService.Listar(t => t.Nombres.ToLower() == Tecnico.Nombres.ToLower() && t.TecnicoId != Tecnico.TecnicoId);
-        Existe = listaTecnicos.Any();
-        return Existe;
+        Existe = await tecnicoService.Existe(Tecnico.Nombres);
+        return !Existe;
     }
 
     public async Task Guardar()
     {
         if (await Validar())
         {
+            Mensaje = "El tecnico se ha modificado exitosamente";
+
             return;
         }
 
