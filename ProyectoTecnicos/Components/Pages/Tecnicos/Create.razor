@@ -6,7 +6,7 @@
 @rendermode InteractiveServer
 
 <PageTitle>T&eacute;cnico Create</PageTitle>
-<EditForm Model="tecnico" OnValidSubmit="Guardar">
+<EditForm Model="Tecnico" OnValidSubmit="Guardar">
     <DataAnnotationsValidator/>
     <div class="container card shadow-lg">
         <div>
@@ -19,17 +19,17 @@
             <div class="card-body">
                 @*ID*@
                 <label class="form-label">T&eacute;cnico Id</label>
-                <InputNumber class="form-control" @bind-Value="tecnico.TecnicoId"></InputNumber>
+                <InputNumber class="form-control" @bind-Value="Tecnico.TecnicoId"></InputNumber>
 
                 @*Nombres*@
                 <label class="form-label">Nombres</label>
-                <InputText class="form-control" @bind-Value="tecnico.Nombres"></InputText>
-                <ValidationMessage For="(()=> tecnico.Nombres)"/>
+                <InputText class="form-control" @bind-Value="Tecnico.Nombres"></InputText>
+                <ValidationMessage For="(()=> Tecnico.Nombres)"/>
 
                 @*SueldoHora*@
                 <label class="form-label">SueldoHora</label>
-                <InputNumber class="form-control" @bind-Value="tecnico.SueldoHora"></InputNumber>
-                <ValidationMessage For="(()=> tecnico.SueldoHora)" />
+                <InputNumber class="form-control" @bind-Value="Tecnico.SueldoHora"></InputNumber>
+                <ValidationMessage For="(()=> Tecnico.SueldoHora)" />
 
             </div>
 
@@ -46,12 +46,12 @@
     [Parameter]
     public int TecnicoId { get; set; }
 
-    public Tecnicos tecnico { get; set; } = new Tecnicos();
+    public Tecnicos Tecnico { get; set; } = new Tecnicos();
     private bool Existe = false;
 
     public void Nuevo()
     {
-        tecnico = new Tecnicos();
+        Tecnico = new Tecnicos();
         Existe = false;
     }
 
@@ -62,7 +62,7 @@
             return;
         }
 
-        var guardo = await tecnicoService.Guardar(tecnico);
+        var guardo = await tecnicoService.Guardar(Tecnico);
         if (guardo)
         {
             Nuevo();
@@ -71,13 +71,13 @@
 
     public async Task Eliminar()
     {
-        var eliminado = await tecnicoService.Eliminar(tecnico.TecnicoId);
+        var eliminado = await tecnicoService.Eliminar(Tecnico.TecnicoId);
         Nuevo();
     }
 
     public async Task<bool> Validar()
     {
-        var listaTecnicos = await tecnicoService.Listar(t => t.Nombres.ToLower() == tecnico.Nombres.ToLower() && t.TecnicoId != tecnico.TecnicoId);
+        var listaTecnicos = await tecnicoService.Listar(t => t.Nombres.ToLower() == Tecnico.Nombres.ToLower() && t.TecnicoId != Tecnico.TecnicoId);
         Existe = listaTecnicos.Any();
         return Existe;
     }
