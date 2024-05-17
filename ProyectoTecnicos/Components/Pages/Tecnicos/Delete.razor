@@ -5,7 +5,7 @@
 
 @rendermode InteractiveServer
 
-@if (tecnico != null)
+@if (Tecnico != null)
 {
     <div class="container card shadow-lg">
         <div class="shadow-header">
@@ -29,9 +29,9 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <ul class="list-unstyled">
-                                            <li><strong>T&eacute;cnico Id:</strong> @tecnico.TecnicoId</li>
-                                            <li><strong>Nombres:</strong> @tecnico.Nombres</li>
-                                            <li><strong>SueldoHora:</strong> @tecnico.SueldoHora</li>
+                                            <li><strong>T&eacute;cnico Id:</strong> @Tecnico.TecnicoId</li>
+                                            <li><strong>Nombres:</strong> @Tecnico.Nombres</li>
+                                            <li><strong>SueldoHora:</strong> @Tecnico.SueldoHora</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -57,19 +57,19 @@ else
 @code {
     [Parameter]
     public int TecnicoId { get; set; }
-    public Tecnicos? tecnico { get; set; } = new Tecnicos();
+    public Tecnicos? Tecnico { get; set; } = new Tecnicos();
 
     protected override async Task OnInitializedAsync()
     {
         if (TecnicoId != 0)
         {
-            tecnico = await tecnicoService.Buscar(TecnicoId);
+            Tecnico = await tecnicoService.Buscar(TecnicoId);
         }
     }
 
     public async Task EliminarTecnico()
     {
-        if (TecnicoId == 0 || tecnico == null)
+        if (TecnicoId == 0 || Tecnico == null)
         {
             return;
         }
