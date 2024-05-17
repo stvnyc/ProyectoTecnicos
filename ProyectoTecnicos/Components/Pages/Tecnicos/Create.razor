@@ -39,6 +39,7 @@
                 <button type="submit" class="btn btn-crear bi bi-clipboard-plus"> Crear</button>
             </div>
         </div>
+        @Mensaje
     </div>
 </EditForm>
 
@@ -47,6 +48,7 @@
     public int TecnicoId { get; set; }
 
     public Tecnicos Tecnico { get; set; } = new Tecnicos();
+    public string Mensaje { get; set; } = string.Empty;
     private bool Existe = false;
 
     public void Nuevo()
@@ -57,14 +59,16 @@
 
     public async Task Guardar()
     {
-        if (await Validar())
+        if (!await Validar())
         {
+            Mensaje = "El tecnico existe";
             return;
         }
 
         var guardo = await tecnicoService.Guardar(Tecnico);
         if (guardo)
         {
+            Mensaje = "El tecnico ha sido creado exitosamente";
             Nuevo();
         }
     }
@@ -77,9 +81,8 @@
 
     public async Task<bool> Validar()
     {
-        var listaTecnicos = await tecnicoService.Listar(t => t.Nombres.ToLower() == Tecnico.Nombres.ToLower() && t.TecnicoId != Tecnico.TecnicoId);
-        Existe = listaTecnicos.Any();
-        return Existe;
+        Existe = await tecnicoService.Existe(Tecnico.Nombres);
+        return !Existe;
     }
 
     public void Volver()
