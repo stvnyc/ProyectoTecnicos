@@ -14,7 +14,7 @@ public class TecnicoService
         _context = contexto; 
     }
 
-    public async Task<bool> Existe(int tecnicoId)
+    private async Task<bool> Existe(int tecnicoId)
     {
         return await _context.Tecnicos
             .AnyAsync(t => t.TecnicoId == tecnicoId);
