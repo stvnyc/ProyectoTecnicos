@@ -30,7 +30,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var tecnicos in tecnico)
+                    @foreach (var tecnicos in Tecnico)
                     {
                         <tr>
                             <td>@tecnicos.TecnicoId</td>
@@ -48,17 +48,17 @@
 
         @*Footer*@
         <div class="card-footer">
-            <p><strong>Total de t&eacute;cnicos: @tecnico.Count()</strong></p>
+            <p><strong>Total de t&eacute;cnicos: @Tecnico.Count()</strong></p>
         </div>
     </div>
 </div>
 
 @code {
-    public List<Tecnicos> tecnico = new List<Tecnicos>();
+    public List<Tecnicos> Tecnico = new List<Tecnicos>();
 
     protected override async Task OnInitializedAsync()
     {
-        tecnico = await tecnicoService.Listar(t => true);
+        Tecnico = await tecnicoService.Listar(t => true);
     }
 
     public void Crear()
