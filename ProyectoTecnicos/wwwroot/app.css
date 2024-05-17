@@ -12,8 +12,85 @@ a, .btn-link {
     border-color: #1861ac;
 }
 
+.btn-crear {
+    color: #28a745;
+    background-color: #f7f7f7;
+    border-color: #28a745;
+}
+
+.btn-crear:hover {
+    color: #fff;
+    background-color: #28a745
+}
+
+.btn-guardar {
+    color: #28a745;
+    background-color: #f7f7f7;
+    border-color: #28a745;
+}
+
+.btn-guardar:hover {
+    color: #fff;
+    background-color: #28a745
+}
+
+.btn-volver {
+    color: #ff7f0e;
+    background-color: transparent;
+    border-color: #ff7f0e;
+}
+
+.btn-volver:hover {
+    color: #fff;
+    background-color: #ff7f0e;
+}
+
+.btn-ver {
+    color: #000080;
+    background-color: transparent;
+    border-color: #000080;
+}
+
+.btn-ver:hover {
+    color: #fff;
+    background-color: #000080;
+}
+
+.btn-editar {
+    color: #ffc107;
+    background-color: transparent;
+    border-color: #ffc107;
+}
+
+.btn-editar:hover {
+    color: #fff;
+    background-color: #ffc107;
+}
+
+.btn-eliminar {
+    color: #DC3545;
+    background-color: transparent;
+    border-color: #DC3545;
+}
+
+.btn-eliminar:hover {
+    color: #fff;
+    background-color: #DC3545;
+}
+
+.btn-nuevo {
+    color: #64B5FF;
+    background-color: transparent;
+    border-color: #64B5FF;
+}
+
+.btn-nuevo:hover {
+    color: #fff;
+    background-color: #64B5FF;
+}
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .content {
