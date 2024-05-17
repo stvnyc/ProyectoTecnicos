@@ -9,7 +9,7 @@
 <PageTitle>T&eacute;cnico Create</PageTitle>
 <EditForm Model="tecnico" OnValidSubmit="Guardar">
     <DataAnnotationsValidator/>
-    <div class="container">
+    <div class="container card">
         <div class="shadow-lg">
             @*Header*@
             <div class="card-header text-center">
@@ -36,8 +36,8 @@
 
             @*Footer*@
             <div class="card-footer">
-                <button type="button" class="btn btn-outline-warning bi bi-arrow-return-left" @onclick="Volver"> Volver</button>
-                <button type="submit" class="btn btn-outline-success bi bi-clipboard-plus"> Crear</button>
+                <button type="button" class="btn btn-volver bi bi-arrow-return-left" @onclick="Volver"> Volver</button>
+                <button type="submit" class="btn btn-crear bi bi-clipboard-plus"> Crear</button>
             </div>
         </div>
     </div>

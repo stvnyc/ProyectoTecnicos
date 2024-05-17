@@ -43,9 +43,9 @@
         @*Footer*@
         <div class="card-footer d-flex justify-content-center mt-3">
             <div class="btn-group">
-                <button type="button" class="btn btn-outline-warning bi bi-arrow-return-left" @onclick="Volver"> Volver</button>
-                <button type="button" class="btn btn-outline-primary bi bi-plus" @onclick="Nuevo"> Nuevo</button>
-                <button type="submit" class="btn btn-outline-success bi bi-check-lg"> Guardar</button>
+                <button type="button" class="btn btn-volver bi bi-arrow-return-left" @onclick="Volver">  Volver</button>
+                <button type="button" class="btn btn-nuevo bi bi-plus" @onclick="Nuevo"> Nuevo</button>
+                <button type="submit" class="btn btn-guardar bi bi-check-lg"> Guardar</button>
             </div>
         </div>
     </div>
@@ -106,12 +106,6 @@
         {
             Nuevo();
         }
-    }
-
-    public async Task Eliminar()
-    {
-        var eliminado = await tecnicoService.Eliminar(Tecnico.TecnicoId);
-        Nuevo();
     }
 
     public void Volver()
