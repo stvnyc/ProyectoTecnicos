@@ -23,6 +23,8 @@ public class Program
 
         builder.Services.AddScoped<TecnicoService>();
 
+        builder.Services.AddBlazorBootstrap();
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
