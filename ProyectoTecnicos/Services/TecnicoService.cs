@@ -14,10 +14,17 @@ public class TecnicoService
         _context = contexto; 
     }
 
-    private async Task<bool> Existe(int tecnicoId)
+    public async Task<bool> Existe(int TecnicoId)
     {
         return await _context.Tecnicos
-            .AnyAsync(t => t.TecnicoId == tecnicoId);
+            .AnyAsync(t => t.TecnicoId == TecnicoId);
+
+    }
+
+    public async Task<bool> Existe(string? nombres, int? tecnicoId = null)
+    {
+        return await _context.Tecnicos
+            .AnyAsync(t => t.Nombres.Equals(nombres));
     }
 
     private async Task<bool> Insertar(Tecnicos tecnico)
@@ -36,11 +43,6 @@ public class TecnicoService
 
     public async Task<bool> Guardar(Tecnicos tecnico)
     {
-        if (_context.Tecnicos!.Any(t => t.Nombres!.ToLower().Replace(" ", "") == tecnico.Nombres!.ToLower().Replace(" ", "")
-        && t.TecnicoId != tecnico.TecnicoId))
-        {
-            return false;
-        }
         if (!await Existe(tecnico.TecnicoId))
             return await Insertar(tecnico);
         else
