@@ -1,0 +1,104 @@
+﻿@page "/TiposTecnicos/Create"
+
+@inject TiposTecnicosService tiposTecnicosService
+@inject NavigationManager Navigation
+
+@rendermode InteractiveServer
+
+<PageTitle>Tipos de T&eacute;cnicos Create</PageTitle>
+<EditForm Model="tiposTecnicos" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <Toasts class="p-3" Messages="Mensaje" Placement="ToastsPlacement.TopRight" />
+
+    <div class="card shadow-lg">
+        <div>
+            @*Header*@
+            <div class="card-header text-center">
+                <h3><strong>Crear nuevo T&eacute;cnico</strong></h3>
+            </div>
+
+            @*Body*@
+            <div class="card-body">
+                @*ID*@
+                <label class="form-label">T&eacute;cnico Id</label>
+                <InputNumber class="form-control" @bind-Value="tiposTecnicos.TipoId"></InputNumber>
+
+                @*Nombres*@
+                <label class="form-label">Nombres</label>
+                <InputText class="form-control" @bind-Value="tiposTecnicos.Descripcion"></InputText>
+                <ValidationMessage For="(()=> tiposTecnicos.Descripcion)" />
+            </div>
+
+            @*Footer*@
+            <div class="card-footer">
+                <button type="button" class="btn btn-volver bi bi-arrow-return-left" @onclick="Volver"> Volver</button>
+                <button type="submit" class="btn btn-crear bi bi-clipboard-plus"> Crear</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int TipoId { get; set; }
+
+    public TiposTecnicos tiposTecnicos { get; set; } = new TiposTecnicos();
+    private bool Existe = false;
+    List<ToastMessage> Mensaje = new List<ToastMessage>();
+
+    private void MostrarMensaje(ToastType toastType, string mensaje)
+    {
+        Mensaje.Add(CreateToastMessage(toastType, mensaje));
+    }
+
+    private ToastMessage CreateToastMessage(ToastType toastType, string mensaje)
+    => new ToastMessage
+        {
+            Type = toastType,
+            Title = "Notificación",
+            HelpText = $"{DateTime.Now}",
+            Message = mensaje,
+        };
+
+    public void Nuevo()
+    {
+        tiposTecnicos = new TiposTecnicos();
+        Existe = false;
+    }
+
+    public async Task Guardar()
+    {
+        if (!await Validar())
+        {
+            MostrarMensaje(ToastType.Warning, $"Ya existe un tipo llamado {tiposTecnicos.Descripcion}");
+            return;
+        }
+
+        var guardo = await tiposTecnicosService.Guardar(tiposTecnicos);
+        if (guardo)
+        {
+            MostrarMensaje(ToastType.Success, $"El tipo {tiposTecnicos.Descripcion} se ha creado correctamente");
+            Nuevo();
+        }
+        else
+            MostrarMensaje(ToastType.Danger, "Se ha producido un error");
+    }
+
+    public async Task Eliminar()
+    {
+        var eliminado = await tiposTecnicosService.Eliminar(tiposTecnicos.TipoId);
+        Nuevo();
+    }
+
+    public async Task<bool> Validar()
+    {
+        Existe = await tiposTecnicosService.Existe(tiposTecnicos.Descripcion);
+        return !Existe;
+    }
+
+    public void Volver()
+    {
+        Navigation.NavigateTo("/TiposTecnicos/Index");
+    }
+}
