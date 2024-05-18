@@ -11,8 +11,34 @@
         @*Header*@
         <div class="card-header text-center">
             <h3><strong>Listado de T&eacute;cnicos</strong></h3>
-            <div class="text-end">
-                <button type="button" class="btn btn-crear bi bi-clipboard-plus" @onclick="Crear"> Crear</button>
+        </div>
+
+        <div class="card-body">
+            <div class="row mb-3 align-items-end">
+                <div class="col-md-3">
+                    <label for="Filtro" class="form-label">Filtrar por:</label>
+                    <select @bind="filtro" class="form-select">
+                        <option disabled>Seleccionar</option>
+                        <option value="id">ID</option>
+                        <option value="Nombres">Nombres</option>
+                        <option value="SueldoHora">SueldoHora</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="ValorFiltro" class="form-label">Búsqueda:</label>
+                    <div class="input-group">
+                        <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
+                        <button @onclick="Buscar" class="btn btn-outline-primary" type="button">
+                            <span class="bi bi-search"></span> Buscar
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-outline-primary" @onclick="Restablecer">Restablecer</button>
+                </div>
+                <div class="col-md-2 text-end">
+                    <button type="button" class="btn btn-crear bi bi-clipboard-plus" @onclick="Crear"> Crear</button>
+                </div>
             </div>
         </div>
 
@@ -55,10 +81,40 @@
 
 @code {
     public List<Tecnicos> Tecnico = new List<Tecnicos>();
+    private string filtro = "Id";
+    private string valorFiltro = "";
 
     protected override async Task OnInitializedAsync()
     {
         Tecnico = await tecnicoService.Listar(t => true);
+    }
+
+    public async Task Restablecer()
+    {
+        Tecnico = await tecnicoService.Listar(t => true);
+    }
+
+    private async Task Buscar()
+    {
+        if (valorFiltro.Trim() != "")
+        {
+            if (filtro == "id" && int.TryParse(valorFiltro, out int TecnicoId))
+            {
+                Tecnico = await tecnicoService.Listar(t => t.TecnicoId == TecnicoId);
+            }
+            else if (filtro == "Nombres")
+            {
+                Tecnico = await tecnicoService.Listar(t => t.Nombres == valorFiltro);
+            }
+            else if (filtro == "SueldoHora" && int.TryParse(valorFiltro, out int SueldoHora))
+            {
+                Tecnico = await tecnicoService.Listar(t => t.SueldoHora == SueldoHora);
+            }
+        }
+        else
+        {
+            Tecnico = await tecnicoService.Listar(p => true);
+        }
     }
 
     public void Crear()
