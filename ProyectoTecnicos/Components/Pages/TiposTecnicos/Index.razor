@@ -1,0 +1,80 @@
+﻿@page "/TiposTecnicos/Index"
+
+@inject TiposTecnicosService tiposTecnicosService
+@inject NavigationManager Navigation
+
+@rendermode InteractiveServer
+
+<PageTitle>Tipos T&eacute;cnicos Index</PageTitle>
+<div class="card shadow-lg">
+    <div>
+        @*Header*@
+        <div class="card-header text-center">
+            <h3><strong>Listado de Tipos de T&eacute;cnicos</strong></h3>
+            <div class="text-end">
+                <button type="button" class="btn btn-crear bi bi-clipboard-plus" @onclick="Crear"> Crear</button>
+            </div>
+        </div>
+
+        @*Body*@
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>TipoId</th>
+                        <th>Descripci&oacute;n</th>
+                        <th>Ver</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var tiposTecnicos in TiposTecnicos)
+                    {
+                        <tr>
+                            <td>@tiposTecnicos.TipoId</td>
+                            <td>@tiposTecnicos.Descripcion</td>
+                            <td><button type="button" class="btn btn-ver bi bi-eye" @onclick="()=>Detalle(tiposTecnicos.TipoId)"></button></td>
+                            <td><button type="button" class="btn btn-editar bi bi-pencil" @onclick="()=>Editar(tiposTecnicos.TipoId)"></button></td>
+                            <td><button type="button" class="btn btn-eliminar bi bi-trash" @onclick="()=>Eliminar(tiposTecnicos.TipoId)"></button></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @*Footer*@
+        <div class="card-footer">
+            <p><strong>Total de t&eacute;cnicos: @TiposTecnicos.Count()</strong></p>
+        </div>
+    </div>
+</div>
+
+@code {
+    public List<TiposTecnicos> TiposTecnicos = new List<TiposTecnicos>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        TiposTecnicos = await tiposTecnicosService.Listar(t => true);
+    }
+
+    public void Crear()
+    {
+        Navigation.NavigateTo("/TiposTecnicos/Create");
+    }
+
+    public void Editar(int id)
+    {
+        Navigation.NavigateTo($"/TiposTecnicos/Edit/{id}");
+    }
+
+    public void Detalle(int id)
+    {
+        Navigation.NavigateTo($"/TiposTecnicos/Detail/{id}");
+    }
+
+    public void Eliminar(int id)
+    {
+        Navigation.NavigateTo($"/TiposTecnicos/Delete/{id}");
+    }
+}
