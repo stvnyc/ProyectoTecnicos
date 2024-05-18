@@ -18,7 +18,6 @@ public class TecnicoService
     {
         return await _context.Tecnicos
             .AnyAsync(t => t.TecnicoId == TecnicoId);
-
     }
 
     public async Task<bool> Existe(string? nombres, int? tecnicoId = null)
