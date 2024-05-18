@@ -7,6 +7,9 @@
 
 <EditForm Model="Tecnico" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
+
+    <Toasts class="p-3" Messages="Mensaje" Placement="ToastsPlacement.TopRight" />
+
     <div class="container card shadow-lg">
         @*Header*@
         <div class="card-header" style="text-align: center;">
@@ -47,7 +50,6 @@
                 <button type="submit" class="btn btn-guardar bi bi-check-lg"> Guardar</button>
             </div>
         </div>
-        @Mensaje
     </div>
 </EditForm>
 
@@ -56,8 +58,8 @@
     public int TecnicoId { get; set; }
 
     public Tecnicos Tecnico { get; set; } = new Tecnicos();
-    public string Mensaje { get; set; } = string.Empty;
     private bool Existe = false;
+    List<ToastMessage> Mensaje = new List<ToastMessage>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -66,6 +68,21 @@
             await Buscar();
         }
     }
+
+    private void MostrarMensaje(ToastType toastType, string mensaje)
+    {
+        Mensaje.Add(CreateToastMessage(toastType, mensaje));
+    }
+
+    private ToastMessage CreateToastMessage(ToastType toastType, string mensaje)
+    => new ToastMessage
+        {
+            Type = toastType,
+            Title = "Notificación",
+            HelpText = $"{DateTime.Now}",
+            Message = mensaje,
+        };
+
 
     public void Nuevo()
     {
@@ -96,18 +113,19 @@
 
     public async Task Guardar()
     {
-        if (await Validar())
+        if (!await Validar())
         {
-            Mensaje = "El tecnico se ha modificado exitosamente";
-
+            MostrarMensaje(ToastType.Warning, $"Ya existe un técnico con ese nombre");
             return;
         }
 
         var guardo = await tecnicoService.Guardar(Tecnico);
         if (guardo)
         {
+            MostrarMensaje(ToastType.Success, $"El técnico se ha editado correctamente");
             Nuevo();
         }
+
     }
 
     public void Volver()
