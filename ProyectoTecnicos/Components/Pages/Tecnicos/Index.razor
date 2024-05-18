@@ -16,13 +16,13 @@
         <div class="card-body">
             <div class="row mb-3 align-items-end">
                 <div class="col-md-3">
-                    <label for="Filtro" class="form-label">Filtrar por:</label>
-                    <select @bind="filtro" class="form-select">
-                        <option disabled>Seleccionar</option>
+                <label for="Filtro" class="form-label">Filtrar por:</label>
+                    <InputSelect id="filtro" class="form-select" @bind-Value="filtro">
+                        <option value="">Seleccionar</option>
                         <option value="id">ID</option>
                         <option value="Nombres">Nombres</option>
                         <option value="SueldoHora">SueldoHora</option>
-                    </select>
+                    </InputSelect>
                 </div>
                 <div class="col-md-4">
                     <label for="ValorFiltro" class="form-label">Búsqueda:</label>
@@ -91,6 +91,8 @@
 
     public async Task Restablecer()
     {
+        filtro = string.Empty;
+        valorFiltro = string.Empty;
         Tecnico = await tecnicoService.Listar(t => true);
     }
 
