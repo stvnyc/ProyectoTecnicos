@@ -8,7 +8,10 @@
 <PageTitle>T&eacute;cnico Create</PageTitle>
 <EditForm Model="Tecnico" OnValidSubmit="Guardar">
     <DataAnnotationsValidator/>
-    <div class="container card shadow-lg">
+
+    <Toasts class="p-3" Messages="Mensaje" Placement="ToastsPlacement.TopRight" />
+
+    <div class="card shadow-lg">
         <div>
             @*Header*@
             <div class="card-header text-center">
@@ -39,7 +42,6 @@
                 <button type="submit" class="btn btn-crear bi bi-clipboard-plus"> Crear</button>
             </div>
         </div>
-        @Mensaje
     </div>
 </EditForm>
 
@@ -48,8 +50,22 @@
     public int TecnicoId { get; set; }
 
     public Tecnicos Tecnico { get; set; } = new Tecnicos();
-    public string Mensaje { get; set; } = string.Empty;
     private bool Existe = false;
+    List<ToastMessage> Mensaje = new List<ToastMessage>();
+
+    private void MostrarMensaje(ToastType toastType, string mensaje)
+    {
+        Mensaje.Add(CreateToastMessage(toastType, mensaje));
+    }
+
+    private ToastMessage CreateToastMessage(ToastType toastType, string mensaje)
+    => new ToastMessage
+        {
+            Type = toastType,
+            Title = "Notificación",
+            HelpText = $"{DateTime.Now}",
+            Message = mensaje,
+        };
 
     public void Nuevo()
     {
@@ -61,16 +77,18 @@
     {
         if (!await Validar())
         {
-            Mensaje = "El tecnico existe";
+            MostrarMensaje(ToastType.Warning, $"Ya existe un técnico llamado {Tecnico.Nombres}");
             return;
         }
 
         var guardo = await tecnicoService.Guardar(Tecnico);
         if (guardo)
         {
-            Mensaje = "El tecnico ha sido creado exitosamente";
+            MostrarMensaje(ToastType.Success, $"El técnico {Tecnico.Nombres} se ha creado correctamente");
             Nuevo();
         }
+        else
+            MostrarMensaje(ToastType.Danger, "Se ha producido un error");
     }
 
     public async Task Eliminar()
