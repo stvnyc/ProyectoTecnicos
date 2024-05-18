@@ -11,7 +11,7 @@ using ProyectoTecnicos.DAL;
 namespace ProyectoTecnicos.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20240508021310_Inicial")]
+    [Migration("20240518211810_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -34,9 +34,27 @@ namespace ProyectoTecnicos.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("idTipo")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("TecnicoId");
 
                     b.ToTable("Tecnicos");
+                });
+
+            modelBuilder.Entity("ProyectoTecnicos.Models.TiposTecnicos", b =>
+                {
+                    b.Property<int>("TipoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("TipoId");
+
+                    b.ToTable("TiposTecnicos");
                 });
 #pragma warning restore 612, 618
         }
