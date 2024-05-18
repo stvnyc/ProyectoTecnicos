@@ -5,6 +5,8 @@
 
 @rendermode InteractiveServer
 
+<Toasts class="p-3" Messages="Mensaje" Placement="ToastsPlacement.TopRight" />
+
 @if (Tecnico != null)
 {
     <div class="container card shadow-lg">
@@ -58,6 +60,7 @@ else
     [Parameter]
     public int TecnicoId { get; set; }
     public Tecnicos? Tecnico { get; set; } = new Tecnicos();
+    List<ToastMessage> Mensaje = new List<ToastMessage>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -66,6 +69,20 @@ else
             Tecnico = await tecnicoService.Buscar(TecnicoId);
         }
     }
+
+    private void MostrarMensaje(ToastType toastType, string mensaje)
+    {
+        Mensaje.Add(CreateToastMessage(toastType, mensaje));
+    }
+
+    private ToastMessage CreateToastMessage(ToastType toastType, string mensaje)
+    => new ToastMessage
+        {
+            Type = toastType,
+            Title = "Notificación",
+            HelpText = $"{DateTime.Now}",
+            Message = mensaje,
+        };
 
     public async Task EliminarTecnico()
     {
@@ -76,8 +93,12 @@ else
 
         if (await tecnicoService.Eliminar(TecnicoId))
         {
+            MostrarMensaje(ToastType.Success, $"El técnico {Tecnico.Nombres} se ha eliminado correctamente");
+            await Task.Delay(2000);
             Volver();
         }
+        else
+            MostrarMensaje(ToastType.Danger, "Se ha producido un error");
     }
 
     public void Volver()
