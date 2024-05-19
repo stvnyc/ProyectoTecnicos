@@ -1,6 +1,7 @@
 ﻿@page "/Tecnico/Index"
 
 @inject TecnicoService tecnicoService
+@inject TiposTecnicosService tiposTecnicosService
 @inject NavigationManager Navigation
 
 @rendermode InteractiveServer
@@ -22,6 +23,7 @@
                         <option value="id">ID</option>
                         <option value="Nombres">Nombres</option>
                         <option value="SueldoHora">SueldoHora</option>
+                        <option value="Descripcion">Descripci&oacute;n</option>
                     </InputSelect>
                 </div>
                 <div class="col-md-4">
@@ -50,6 +52,7 @@
                         <th>T&eacute;cnicoId</th>
                         <th>Nombres</th>
                         <th>SueldoHora</th>
+                        <th>Tipo de T&eacute;cnico</th>
                         <th>Ver</th>
                         <th>Editar</th>
                         <th>Eliminar</th>
@@ -62,6 +65,7 @@
                             <td>@tecnicos.TecnicoId</td>
                             <td>@tecnicos.Nombres</td>
                             <td>@tecnicos.SueldoHora</td>
+                            <td>@(ListTipos.FirstOrDefault(t => t.TipoId == tecnicos.idTipo)?.Descripcion ?? "N/A")</td>
                             <td><button type="button" class="btn btn-ver bi bi-eye" @onclick="()=>Detalle(tecnicos.TecnicoId)"></button></td>
                             <td><button type="button" class="btn btn-editar bi bi-pencil" @onclick="()=>Editar(tecnicos.TecnicoId)"></button></td>
                             <td><button type="button" class="btn btn-eliminar bi bi-trash" @onclick="()=>Eliminar(tecnicos.TecnicoId)"></button></td>
@@ -80,12 +84,14 @@
 
 @code {
     public List<Tecnicos> Tecnico = new List<Tecnicos>();
+    public List<TiposTecnicos> ListTipos { get; set; } = new List<TiposTecnicos>();
     private string filtro = "Id";
     private string valorFiltro = "";
 
     protected override async Task OnInitializedAsync()
     {
         Tecnico = await tecnicoService.Listar(t => true);
+        ListTipos = await tiposTecnicosService.Listar(t => true);
     }
 
     public async Task Restablecer()
@@ -105,11 +111,19 @@
             }
             else if (filtro == "Nombres")
             {
-                Tecnico = await tecnicoService.Listar(t => t.Nombres == valorFiltro);
+                Tecnico = await tecnicoService.Listar(t => t.Nombres.ToLower().Contains(valorFiltro.ToLower()));
             }
             else if (filtro == "SueldoHora" && int.TryParse(valorFiltro, out int SueldoHora))
             {
                 Tecnico = await tecnicoService.Listar(t => t.SueldoHora == SueldoHora);
+            }
+            else if (filtro == "Descripcion")
+            {
+                var descripcion = ListTipos.FirstOrDefault(t => t.Descripcion.Equals(valorFiltro, StringComparison.OrdinalIgnoreCase));
+                if (descripcion != null)
+                {
+                    Tecnico = await tecnicoService.Listar(t => t.idTipo == descripcion.TipoId);
+                }
             }
         }
         else
