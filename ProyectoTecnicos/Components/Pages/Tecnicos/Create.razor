@@ -1,13 +1,14 @@
 ﻿@page "/Tecnico/Create"
 
 @inject TecnicoService tecnicoService
+@inject TiposTecnicosService tiposTecnicosService
 @inject NavigationManager Navigation
 
 @rendermode InteractiveServer
 
 <PageTitle>T&eacute;cnico Create</PageTitle>
 <EditForm Model="Tecnico" OnValidSubmit="Guardar">
-    <DataAnnotationsValidator/>
+    <DataAnnotationsValidator />
 
     <Toasts class="p-3" Messages="Mensaje" Placement="ToastsPlacement.TopRight" />
 
@@ -20,22 +21,45 @@
 
             @*Body*@
             <div class="card-body">
-                @*ID*@
-                <label class="form-label">T&eacute;cnico Id</label>
-                <InputNumber class="form-control" @bind-Value="Tecnico.TecnicoId"></InputNumber>
+                <div>
+                    @*ID*@
+                    <label class="form-label">T&eacute;cnico Id</label>
+                    <div class="col-md-5">
+                        <InputNumber class="form-control" @bind-Value="Tecnico.TecnicoId"></InputNumber>
+                    </div>
+                </div>
 
-                @*Nombres*@
-                <label class="form-label">Nombres</label>
-                <InputText class="form-control" @bind-Value="Tecnico.Nombres"></InputText>
-                <ValidationMessage For="(()=> Tecnico.Nombres)"/>
+                <div class="col-md-5">
+                    @*Nombres*@
+                    <label class="form-label">Nombres</label>
+                    <InputText class="form-control" @bind-Value="Tecnico.Nombres"></InputText>
+                    <ValidationMessage For="(()=> Tecnico.Nombres)" />
+                </div>
 
-                @*SueldoHora*@
-                <label class="form-label">SueldoHora</label>
-                <InputNumber class="form-control" @bind-Value="Tecnico.SueldoHora"></InputNumber>
-                <ValidationMessage For="(()=> Tecnico.SueldoHora)" />
+                <div class="col-md-5">
+                    @*SueldoHora*@
+                    <label class="form-label">SueldoHora</label>
+                    <InputNumber class="form-control" @bind-Value="Tecnico.SueldoHora"></InputNumber>
+                    <ValidationMessage For="(()=> Tecnico.SueldoHora)" />
+                </div>
 
+                <div class="col-md-5">
+                    <label class="form-label">Tipo de T&eacute;cnico</label>
+                    <div>
+                        <div class="row">
+                            <div class="input-group">
+                                <InputSelect @bind-Value="Tecnico.idTipo" class="form-control">
+                                    <option value="0">Seleccione el Tipo de T&eacute;cnico</option>
+                                    @foreach (var item in ListTipos)
+                                    {
+                                        <option value="@item.TipoId">@item.Descripcion</option>
+                                    }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-
             @*Footer*@
             <div class="card-footer">
                 <button type="button" class="btn btn-volver bi bi-arrow-return-left" @onclick="Volver"> Volver</button>
@@ -50,8 +74,14 @@
     public int TecnicoId { get; set; }
 
     public Tecnicos Tecnico { get; set; } = new Tecnicos();
+    public List<TiposTecnicos> ListTipos { get; set; } = new List<TiposTecnicos>();
     private bool Existe = false;
     List<ToastMessage> Mensaje = new List<ToastMessage>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListTipos = await tiposTecnicosService.Listar(t => true);
+    }
 
     private void MostrarMensaje(ToastType toastType, string mensaje)
     {
@@ -99,7 +129,7 @@
 
     public async Task<bool> Validar()
     {
-        Existe = await tecnicoService.Existe(Tecnico.Nombres);
+        Existe = await tecnicoService.Existe(Tecnico.TecnicoId, Tecnico.Nombres);
         return !Existe;
     }
 
