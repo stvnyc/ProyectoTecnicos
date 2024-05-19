@@ -19,10 +19,10 @@ public class TiposTecnicosService
             .AnyAsync(t => t.TipoId == TipoId);
     }
 
-    public async Task<bool> Existe(string? descripcion, int? tipoId = null)
+    public async Task<bool> Existe(int tipoId, string descripcion)
     {
         return await _context.TiposTecnicos
-            .AnyAsync(t => t.Descripcion.Equals(descripcion));
+            .AnyAsync(t => t.TipoId != tipoId && t.Descripcion.Equals(descripcion));
     }
 
     private async Task<bool> Insertar(TiposTecnicos tiposTecnicos)
