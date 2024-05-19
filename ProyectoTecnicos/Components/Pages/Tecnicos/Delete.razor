@@ -1,6 +1,8 @@
 ﻿@page "/Tecnico/Delete/{TecnicoId:int}"
 
 @inject TecnicoService tecnicoService
+@inject TiposTecnicosService tiposTecnicosService
+
 @inject NavigationManager Navigation
 
 @rendermode InteractiveServer
@@ -9,31 +11,32 @@
 
 @if (Tecnico != null)
 {
-    <div class="container card shadow-lg">
+    <div class="card shadow-lg">
         <div class="shadow-header">
             @*Header*@
             <div class="card-header text-center">
                 <h3><strong>Eliminar T&eacute;cnico</strong></h3>
             </div>
-            <div class="card-header">
+            <div class="card-header text-center">
                 <h3 class="text-danger">¿Est&aacute;s seguro de que quieres eliminar este T&eacute;cnico?</h3>
             </div>
 
             @*Body*@
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-14">
+            <div>
+                <div>
+                    <div>
                         <div class="card-header">
-                            <h3 class="text-center"><strong>Datos del T&eacute;cnico</strong></h3>
+                            <h3><strong>Datos del T&eacute;cnico:</strong></h3>
                         </div>
                         <div class="card-body">
-                            <div class="card-body">
-                                <div class="row">
+                            <div>
+                                <div>
                                     <div class="col-md-6">
                                         <ul class="list-unstyled">
                                             <li><strong>T&eacute;cnico Id:</strong> @Tecnico.TecnicoId</li>
                                             <li><strong>Nombres:</strong> @Tecnico.Nombres</li>
                                             <li><strong>SueldoHora:</strong> @Tecnico.SueldoHora</li>
+                                            <li><strong>Tipo de T&eacute;cnico:</strong> @(ListTipos.FirstOrDefault(t => t.TipoId == Tecnico.idTipo)?.Descripcion ?? "N/A")</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -60,6 +63,8 @@ else
     [Parameter]
     public int TecnicoId { get; set; }
     public Tecnicos? Tecnico { get; set; } = new Tecnicos();
+    public List<TiposTecnicos> ListTipos { get; set; } = new List<TiposTecnicos>();
+
     List<ToastMessage> Mensaje = new List<ToastMessage>();
 
     protected override async Task OnInitializedAsync()
@@ -68,6 +73,7 @@ else
         {
             Tecnico = await tecnicoService.Buscar(TecnicoId);
         }
+        ListTipos = await tiposTecnicosService.Listar(t => true);
     }
 
     private void MostrarMensaje(ToastType toastType, string mensaje)
