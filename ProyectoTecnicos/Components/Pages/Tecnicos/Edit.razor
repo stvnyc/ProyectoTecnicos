@@ -1,6 +1,7 @@
 ﻿@page "/Tecnico/Edit/{TecnicoId:int}"
 
 @inject TecnicoService tecnicoService
+@inject TiposTecnicosService tiposTecnicosService
 @inject NavigationManager Navigation
 
 @rendermode InteractiveServer
@@ -10,44 +11,63 @@
 
     <Toasts class="p-3" Messages="Mensaje" Placement="ToastsPlacement.TopRight" />
 
-    <div class="container card shadow-lg">
-        @*Header*@
-        <div class="card-header" style="text-align: center;">
-            <h3>Editar Tecnicos</h3>
-        </div>
+    <div class="card shadow-lg">
+        <div>
+            @*Header*@
+            <div class="card-header text-center">
+                <h3>Editar Tecnicos</h3>
+            </div>
 
-        @*Body*@
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="TecnicoId" class="form-label">T&eacute;cnicoId:</label>
-                    <div class="input-group">
-                        <div style="width: 40%; height: 1em;">
-                            <InputNumber @bind-Value="Tecnico.TecnicoId" class="form-control" style="font-size: 0.8em;" aria-describedby="BotonBuscar" readonly/>
+            @*Body*@
+            <div class="card-body">
+                <div>
+                    <div>
+                        <label for="TecnicoId" class="form-label">T&eacute;cnicoId:</label>
+                        <div class="input-group">
+                            <div class="col-md-5">
+                                <InputNumber @bind-Value="Tecnico.TecnicoId" class="form-control" style="font-size: 0.8em;" aria-describedby="BotonBuscar" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <label for="Nombres" class="form-label">Nombres:</label>
+                    <InputText @bind-Value="Tecnico.Nombres" class="form-control" />
+                    <ValidationMessage For="@(() => Tecnico.Nombres)" />
+                </div>
+
+                <div class="col-md-5">
+                    <label for="SueldoHora" class="form-label">SueldoHora:</label>
+                    <InputNumber @bind-Value="Tecnico.SueldoHora" class="form-control" />
+                    <ValidationMessage For="@(() => Tecnico.SueldoHora)" />
+                </div>
+
+                <div class="col-md-5">
+                    <label class="form-label">Tipo de T&eacute;cnico</label>
+                    <div>
+                        <div class="row">
+                            <div class="input-group">
+                                <InputSelect @bind-Value="Tecnico.idTipo" class="form-control">
+                                    <option value="0">Seleccione el Tipo de T&eacute;cnico</option>
+                                    @foreach (var item in ListTipos)
+                                    {
+                                        <option value="@item.TipoId">@item.Descripcion</option>
+                                    }
+                                </InputSelect>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="mb-3">
-                <label for="Nombres" class="form-label">Nombres:</label>
-                <InputText @bind-Value="Tecnico.Nombres" class="form-control" />
-                <ValidationMessage For="@(() => Tecnico.Nombres)" />
-            </div>
-
-            <div class="mb-3">
-                <label for="SueldoHora" class="form-label">SueldoHora:</label>
-                <InputNumber @bind-Value="Tecnico.SueldoHora" class="form-control" />
-                <ValidationMessage For="@(() => Tecnico.SueldoHora)" />
-            </div>
-        </div>
-
-        @*Footer*@
-        <div class="card-footer d-flex justify-content-center mt-3">
-            <div class="btn-group">
-                <button type="button" class="btn btn-volver bi bi-arrow-return-left" @onclick="Volver">  Volver</button>
-                <button type="button" class="btn btn-nuevo bi bi-plus" @onclick="Nuevo"> Nuevo</button>
-                <button type="submit" class="btn btn-guardar bi bi-check-lg"> Guardar</button>
+            @*Footer*@
+            <div class="card-footer d-flex justify-content-center mt-3">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-volver bi bi-arrow-return-left" @onclick="Volver">  Volver</button>
+                    <button type="button" class="btn btn-nuevo bi bi-plus" @onclick="Nuevo"> Nuevo</button>
+                    <button type="submit" class="btn btn-guardar bi bi-check-lg"> Guardar</button>
+                </div>
             </div>
         </div>
     </div>
@@ -58,6 +78,7 @@
     public int TecnicoId { get; set; }
 
     public Tecnicos Tecnico { get; set; } = new Tecnicos();
+    public List<TiposTecnicos> ListTipos { get; set; } = new List<TiposTecnicos>();
     private bool Existe = false;
     List<ToastMessage> Mensaje = new List<ToastMessage>();
 
@@ -67,6 +88,8 @@
         {
             await Buscar();
         }
+
+        ListTipos = await tiposTecnicosService.Listar(t => true);
     }
 
     private void MostrarMensaje(ToastType toastType, string mensaje)
@@ -107,7 +130,7 @@
 
     public async Task<bool> Validar()
     {
-        Existe = await tecnicoService.Existe(Tecnico.Nombres);
+        Existe = await tecnicoService.Existe(Tecnico.TecnicoId, Tecnico.Nombres);
         return !Existe;
     }
 
