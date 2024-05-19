@@ -11,8 +11,33 @@
         @*Header*@
         <div class="card-header text-center">
             <h3><strong>Listado de Tipos de T&eacute;cnicos</strong></h3>
-            <div class="text-end">
-                <button type="button" class="btn btn-crear bi bi-clipboard-plus" @onclick="Crear"> Crear</button>
+        </div>
+
+        <div class="card-body">
+            <div class="row mb-3 align-items-end">
+                <div class="col-md-3">
+                    <label for="Filtro" class="form-label">Filtrar por:</label>
+                    <InputSelect id="filtro" class="form-select" @bind-Value="filtro">
+                        <option value="">Seleccionar</option>
+                        <option value="id">ID</option>
+                        <option value="descripcion">Descripci&oacute;n</option>
+                    </InputSelect>
+                </div>
+                <div class="col-md-4">
+                    <label for="ValorFiltro" class="form-label">Búsqueda:</label>
+                    <div class="input-group">
+                        <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
+                        <button @onclick="Buscar" class="btn btn-outline-primary" type="button">
+                            <span class="bi bi-search"></span> Buscar
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-outline-primary" @onclick="Restablecer">Restablecer</button>
+                </div>
+                <div class="col-md-2 text-end">
+                    <button type="button" class="btn btn-crear bi bi-clipboard-plus" @onclick="Crear"> Crear</button>
+                </div>
             </div>
         </div>
 
@@ -52,9 +77,37 @@
 
 @code {
     public List<TiposTecnicos> TiposTecnicos = new List<TiposTecnicos>();
+    private string filtro = "Id";
+    private string valorFiltro = "";
 
     protected override async Task OnInitializedAsync()
     {
+        TiposTecnicos = await tiposTecnicosService.Listar(t => true);
+    }
+
+    private async Task Buscar()
+    {
+        if (valorFiltro.Trim() != "")
+        {
+            if (filtro == "id" && int.TryParse(valorFiltro, out int TipoId))
+            {
+                TiposTecnicos = await tiposTecnicosService.Listar(t => t.TipoId == TipoId);
+            }
+            else if (filtro == "descripcion")
+            {
+                TiposTecnicos = await tiposTecnicosService.Listar(t => t.Descripcion.ToLower().Contains(valorFiltro.ToLower()));
+            }
+        }
+        else
+        {
+            TiposTecnicos = await tiposTecnicosService.Listar(p => true);
+        }
+    }
+
+    public async Task Restablecer()
+    {
+        filtro = string.Empty;
+        valorFiltro = string.Empty;
         TiposTecnicos = await tiposTecnicosService.Listar(t => true);
     }
 
