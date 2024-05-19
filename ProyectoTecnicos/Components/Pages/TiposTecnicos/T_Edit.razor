@@ -5,7 +5,7 @@
 
 @rendermode InteractiveServer
 
-<EditForm Model="tiposTecnicos" OnInvalidSubmit="Guardar">
+<EditForm Model="tiposTecnicos" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
 
     <Toasts class="p-3" Messages="Mensaje" Placement="ToastsPlacement.TopRight" />
@@ -56,10 +56,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (TipoId != 0)
-        {
-            await Buscar();
-        }
+        tiposTecnicos.TipoId = TipoId;
+        tiposTecnicos = await tiposTecnicosService.Buscar(tiposTecnicos.TipoId);
     }
 
     private void MostrarMensaje(ToastType toastType, string mensaje)
@@ -99,7 +97,7 @@
 
     public async Task<bool> Validar()
     {
-        Existe = await tiposTecnicosService.Existe(tiposTecnicos.Descripcion);
+        Existe = await tiposTecnicosService.Existe(tiposTecnicos.TipoId, tiposTecnicos.Descripcion);
         return !Existe;
     }
 
