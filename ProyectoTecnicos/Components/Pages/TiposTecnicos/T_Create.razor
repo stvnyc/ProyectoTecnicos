@@ -21,11 +21,11 @@
             @*Body*@
             <div class="card-body">
                 @*ID*@
-                <label class="form-label">T&eacute;cnico Id</label>
+                <label class="form-label">TipoId</label>
                 <InputNumber class="form-control" @bind-Value="tiposTecnicos.TipoId"></InputNumber>
 
                 @*Nombres*@
-                <label class="form-label">Nombres</label>
+                <label class="form-label">Descripci&oacute;n</label>
                 <InputText class="form-control" @bind-Value="tiposTecnicos.Descripcion"></InputText>
                 <ValidationMessage For="(()=> tiposTecnicos.Descripcion)" />
             </div>
@@ -93,7 +93,7 @@
 
     public async Task<bool> Validar()
     {
-        Existe = await tiposTecnicosService.Existe(tiposTecnicos.Descripcion);
+        Existe = await tiposTecnicosService.Existe(tiposTecnicos.TipoId, tiposTecnicos.Descripcion);
         return !Existe;
     }
 
