@@ -9,5 +9,5 @@ public class TiposTecnicos
 
     [Required(ErrorMessage = "El campo descripción es requerido")]
     [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Este campo no debe contener caracteres especiales")]
-    public string? Descripcion { get; set; }
+    public string Descripcion { get; set; }
 }
