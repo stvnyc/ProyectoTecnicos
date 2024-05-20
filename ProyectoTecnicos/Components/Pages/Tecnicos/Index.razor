@@ -17,7 +17,7 @@
         <div class="card-body">
             <div class="row mb-3 align-items-end">
                 <div class="col-md-3">
-                <label for="Filtro" class="form-label">Filtrar por:</label>
+                    <label for="Filtro" class="form-label">Filtrar por:</label>
                     <InputSelect id="filtro" class="form-select" @bind-Value="filtro">
                         <option value="" disabled>Seleccionar</option>
                         <option value="id">ID</option>
@@ -26,6 +26,7 @@
                         <option value="Descripcion">Descripci&oacute;n</option>
                     </InputSelect>
                 </div>
+
                 <div class="col-md-4">
                     <label for="ValorFiltro" class="form-label">Búsqueda:</label>
                     <div class="input-group">
@@ -38,6 +39,7 @@
                 <div class="col-md-3">
                     <button type="button" class="btn btn-outline-primary" @onclick="Restablecer">Restablecer</button>
                 </div>
+
                 <div class="col-md-2 text-end">
                     <button type="button" class="btn btn-crear bi bi-clipboard-plus" @onclick="Crear"> Crear</button>
                 </div>
@@ -118,7 +120,7 @@
                 Tecnico = await tecnicoService.Listar(t => t.SueldoHora == SueldoHora);
             }
             else if (filtro == "Descripcion")
-            {                
+            {
                 var tiposIguales = await tiposTecnicosService.Listar(t => t.Descripcion.ToLower().Contains(valorFiltro.ToLower()));
                 var tiposIdsIguales = tiposIguales.Select(t => t.TipoId).ToList();
 
