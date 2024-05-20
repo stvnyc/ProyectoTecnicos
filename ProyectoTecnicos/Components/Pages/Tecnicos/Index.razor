@@ -19,7 +19,7 @@
                 <div class="col-md-3">
                 <label for="Filtro" class="form-label">Filtrar por:</label>
                     <InputSelect id="filtro" class="form-select" @bind-Value="filtro">
-                        <option value="">Seleccionar</option>
+                        <option value="" disabled>Seleccionar</option>
                         <option value="id">ID</option>
                         <option value="Nombres">Nombres</option>
                         <option value="SueldoHora">SueldoHora</option>
@@ -85,7 +85,7 @@
 @code {
     public List<Tecnicos> Tecnico = new List<Tecnicos>();
     public List<TiposTecnicos> ListTipos { get; set; } = new List<TiposTecnicos>();
-    private string filtro = "Id";
+    private string filtro = "";
     private string valorFiltro = "";
 
     protected override async Task OnInitializedAsync()
