@@ -119,11 +119,7 @@
             }
             else if (filtro == "Descripcion")
             {
-                var descripcion = ListTipos.FirstOrDefault(t => t.Descripcion.Equals(valorFiltro, StringComparison.OrdinalIgnoreCase));
-                if (descripcion != null)
-                {
-                    Tecnico = await tecnicoService.Listar(t => t.idTipo == descripcion.TipoId);
-                }
+                ListTipos = await tiposTecnicosService.Listar(t => t.Descripcion.ToLower().Contains(valorFiltro.ToLower()));
             }
         }
         else
