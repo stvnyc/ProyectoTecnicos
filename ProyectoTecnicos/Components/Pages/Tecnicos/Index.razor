@@ -118,8 +118,11 @@
                 Tecnico = await tecnicoService.Listar(t => t.SueldoHora == SueldoHora);
             }
             else if (filtro == "Descripcion")
-            {
-                ListTipos = await tiposTecnicosService.Listar(t => t.Descripcion.ToLower().Contains(valorFiltro.ToLower()));
+            {                
+                var tiposIguales = await tiposTecnicosService.Listar(t => t.Descripcion.ToLower().Contains(valorFiltro.ToLower()));
+                var tiposIdsIguales = tiposIguales.Select(t => t.TipoId).ToList();
+
+                Tecnico = await tecnicoService.Listar(t => tiposIdsIguales.Contains(t.idTipo));
             }
         }
         else
