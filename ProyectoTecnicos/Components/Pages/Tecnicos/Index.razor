@@ -113,7 +113,7 @@
             }
             else if (filtro == "Nombres")
             {
-                Tecnico = await tecnicoService.Listar(t => t.Nombres.ToLower().Contains(valorFiltro.ToLower()));
+                Tecnico = await tecnicoService.Listar(t => t.Nombres!.ToLower().Contains(valorFiltro.ToLower()));
             }
             else if (filtro == "SueldoHora" && int.TryParse(valorFiltro, out int SueldoHora))
             {
