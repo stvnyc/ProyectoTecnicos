@@ -36,6 +36,8 @@ namespace ProyectoTecnicos.Migrations
 
                     b.HasKey("TecnicoId");
 
+                    b.HasIndex("idTipo");
+
                     b.ToTable("Tecnicos");
                 });
 
@@ -52,6 +54,17 @@ namespace ProyectoTecnicos.Migrations
                     b.HasKey("TipoId");
 
                     b.ToTable("TiposTecnicos");
+                });
+
+            modelBuilder.Entity("ProyectoTecnicos.Models.Tecnicos", b =>
+                {
+                    b.HasOne("ProyectoTecnicos.Models.TiposTecnicos", "TiposTecnicos")
+                        .WithMany()
+                        .HasForeignKey("idTipo")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TiposTecnicos");
                 });
 #pragma warning restore 612, 618
         }
