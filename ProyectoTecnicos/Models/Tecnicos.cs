@@ -16,7 +16,7 @@ public class Tecnicos
     [Range(0.01, float.MaxValue, ErrorMessage = "Ingrese un valor mayor a 0")]
     public decimal? SueldoHora { get; set; }
 
-    [ForeignKey("TIpoTecnico")]
+    [ForeignKey("TiposTecnicos")]
     [Range(1, 100, ErrorMessage = "Selecciona un tipo")]
     public int idTipo { get; set; }
 }
