@@ -19,4 +19,6 @@ public class Tecnicos
     [ForeignKey("TiposTecnicos")]
     [Range(1, 100, ErrorMessage = "Selecciona un tipo")]
     public int idTipo { get; set; }
+
+    public TiposTecnicos? TiposTecnicos { get; set; }
 }
