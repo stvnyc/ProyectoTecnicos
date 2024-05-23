@@ -67,7 +67,7 @@
                             <td>@tecnicos.TecnicoId</td>
                             <td>@tecnicos.Nombres</td>
                             <td>@tecnicos.SueldoHora</td>
-                            <td>@tecnicos.TiposTecnicos.Descripcion</td>
+                            <td>@tecnicos.TiposTecnicos!.Descripcion</td>
                             <td><button type="button" class="btn btn-ver bi bi-eye" @onclick="()=>Detalle(tecnicos.TecnicoId)"></button></td>
                             <td><button type="button" class="btn btn-editar bi bi-pencil" @onclick="()=>Editar(tecnicos.TecnicoId)"></button></td>
                             <td><button type="button" class="btn btn-eliminar bi bi-trash" @onclick="()=>Eliminar(tecnicos.TecnicoId)"></button></td>
