@@ -9,7 +9,7 @@ public class Tecnicos
     public int TecnicoId { get; set; }
 
     [Required(ErrorMessage = "El campo Nombres es olbigatorio!")]
-    [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "El Nombre debe contener solo letras.")]
+    [RegularExpression(@"^[a-zA-ZñÑ\s]+$", ErrorMessage = "El Nombre debe contener solo letras.")]
     public string Nombres { get; set; }
 
     [Required(ErrorMessage = "El campo Sueldo es obligatorio!")]
