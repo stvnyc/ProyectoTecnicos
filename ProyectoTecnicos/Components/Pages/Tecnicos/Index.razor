@@ -117,7 +117,7 @@
             }
             else if (filtro == "SueldoHora" && int.TryParse(valorFiltro, out int SueldoHora))
             {
-                Tecnico = await tecnicoService.Listar(t => t.SueldoHora.ToString().Contains(SueldoHora.ToString()));
+                Tecnico = await tecnicoService.Listar(t => t.SueldoHora.ToString()!.Contains(SueldoHora.ToString()));
             }
             else if (filtro == "Descripcion")
             {
