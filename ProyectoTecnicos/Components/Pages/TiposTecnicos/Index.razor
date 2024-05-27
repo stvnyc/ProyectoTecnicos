@@ -1,6 +1,7 @@
 ﻿@page "/TipoTecnico/Index"
 
 @inject TiposTecnicosService tiposTecnicosService
+@inject IncentivoService incentivoService
 @inject NavigationManager Navigation
 
 @rendermode InteractiveServer
@@ -48,6 +49,7 @@
                     <tr>
                         <th>TipoId</th>
                         <th>Descripci&oacute;n</th>
+                        <th>Monto Total</th>
                         <th>Ver</th>
                         <th>Editar</th>
                         <th>Eliminar</th>
@@ -59,6 +61,7 @@
                         <tr>
                             <td>@tiposTecnicos.TipoId</td>
                             <td>@tiposTecnicos.Descripcion</td>
+                            <td>@tiposTecnicos.Incentivo</td>
                             <td><button type="button" class="btn btn-ver bi bi-eye" @onclick="()=>Detalle(tiposTecnicos.TipoId)"></button></td>
                             <td><button type="button" class="btn btn-editar bi bi-pencil" @onclick="()=>Editar(tiposTecnicos.TipoId)"></button></td>
                             <td><button type="button" class="btn btn-eliminar bi bi-trash" @onclick="()=>Eliminar(tiposTecnicos.TipoId)"></button></td>
@@ -77,12 +80,15 @@
 
 @code {
     public List<TiposTecnicos> TiposTecnicos = new List<TiposTecnicos>();
+    public List<Incentivos> Incentivos = new List<Incentivos>();
     private string filtro = "";
     private string valorFiltro = "";
 
     protected override async Task OnInitializedAsync()
     {
+        await tiposTecnicosService.MontoIncentivos();
         TiposTecnicos = await tiposTecnicosService.Listar(t => true);
+        Incentivos = await incentivoService.Listar(t => true);
     }
 
     private async Task Buscar()
