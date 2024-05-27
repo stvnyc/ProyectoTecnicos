@@ -65,8 +65,42 @@ public class TiposTecnicosService
     public async Task<List<TiposTecnicos>> Listar(Expression<Func<TiposTecnicos, bool>> criterio)
     {
         return await _context.TiposTecnicos
+            .Include(t => t.Tecnicos)
             .AsNoTracking()
             .Where(criterio)
             .ToListAsync();
+    }
+
+    public async Task MontoIncentivos()
+    {
+        var tiposTecnicos = await _context.TiposTecnicos.ToListAsync();
+
+        foreach (var tipo in tiposTecnicos)
+        {
+            tipo.Incentivo = await CalcularMontoTIncentivos(tipo.TipoId);
+        }
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<decimal> CalcularMontoTIncentivos(int tipoId)
+    {
+        var montoTotal = await _context.Incentivos
+            .Where(i => i.Tecnicos.idTipo == tipoId)
+            .SumAsync(i => (double)i.Monto);
+
+        return (decimal)montoTotal;
+    }
+
+    public async Task<List<TiposTecnicos>> ListaTotal()
+    {
+        var tiposTecnicos = await _context.TiposTecnicos
+            .Include(t => t.Tecnicos)
+            .ToListAsync();
+
+        foreach (var tipo in tiposTecnicos)
+        {
+            tipo.Incentivo = await CalcularMontoTIncentivos(tipo.TipoId);
+        }
+        return tiposTecnicos;
     }
 }

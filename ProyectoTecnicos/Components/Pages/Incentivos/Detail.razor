@@ -1,0 +1,61 @@
+﻿@page "/Incentivo/Detail/{IncentivoId:int}"
+
+@inject IncentivoService incentivoService
+@inject TecnicoService tecnicoService
+@inject NavigationManager Navigation
+
+@rendermode InteractiveServer
+
+<PageTitle>Detalles de Incentivos</PageTitle>
+
+@if (Incentivo != null)
+{
+    @*Body*@
+    <div class="card shadow-lg">
+        <div>
+            <div class="card-header">
+                <h3 class="text-center"><strong>Detalles del Incentivo</strong></h3>
+            </div>
+            <div class="card">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li><strong>IncentivoId:</strong> @Incentivo.IncentivoId</li>
+                                <li><strong>Fecha:</strong> @Incentivo.Fecha</li>
+                                <li><strong>Descripci&oacute;n:</strong> @Incentivo.Descripcion</li>
+                                <li><strong>CantidadServicos:</strong> @Incentivo.CantidadServicios</li>
+                                <li><strong>Monto:</strong> @Incentivo.Monto</li>
+                                <li><strong>TipoTecnico:</strong> @(ListTecnicos.FirstOrDefault(t => t.TecnicoId == Incentivo.Tecnicos.TecnicoId)?.Nombres)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*Footer*@
+            <div class="card-footer">
+                <button type="button" class="btn btn-volver bi bi-arrow-return-left" @onclick="Volver"> Volver</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int IncentivoId { get; set; }
+    public Incentivos? Incentivo { get; set; } = new Incentivos();
+    public List<Tecnicos> ListTecnicos { get; set; } = new List<Tecnicos>();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Incentivo!.IncentivoId = IncentivoId;
+        Incentivo = await incentivoService.Buscar(Incentivo.IncentivoId);
+        ListTecnicos = await tecnicoService.Listar(t => true);
+    }
+
+    public void Volver()
+    {
+        Navigation.NavigateTo("/Incentivo/Index");
+    }
+}

@@ -1,0 +1,105 @@
+﻿@page "/Incentivo/Delete/{IncentivoId:int}"
+
+@inject IncentivoService incentivoService
+@inject TecnicoService tecnicoService
+@inject NavigationManager Navigation
+
+@rendermode InteractiveServer
+
+<Toasts class="p-3" Messages="Mensaje" Placement="ToastsPlacement.TopRight" />
+
+<div class="card shadow-lg">
+    <div class="shadow-header">
+        @*Header*@
+        <div class="card-header text-center">
+            <h3><strong>Eliminar Incentivo</strong></h3>
+        </div>
+        <div class="card-header text-center">
+            <h3 class="text-danger">¿Est&aacute;s seguro de que quieres eliminar este Incentivo?</h3>
+        </div>
+
+        <div>
+            <div>
+                <div>
+                    <div class="card-header">
+                        <h3><strong>Datos del Incentivo:</strong></h3>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <div>
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled">
+                                        <li><strong>InventivoId:</strong> @Incentivo!.IncentivoId</li>
+                                        <li><strong>Fecha:</strong> @Incentivo.Fecha</li>
+                                        <li><strong>Descripci&oacute;n:</strong> @Incentivo.Descripcion</li>
+                                        <li><strong>CantidadServicios:</strong> @Incentivo.CantidadServicios</li>
+                                        <li><strong>Monto:</strong> @Incentivo.Monto</li>
+                                        <li><strong>Tipo de T&eacute;cnico:</strong> @(ListTecnicos.FirstOrDefault(t => t.TecnicoId == Incentivo.Tecnicos?.TecnicoId)?.Nombres)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*Footer*@
+        <div class="card-footer">
+            <button type="button" class="btn btn-volver bi bi-arrow-return-left" @onclick="Volver"> Volver</button>
+            <button type="button" class="btn btn-eliminar bi bi-trash" @onclick="EliminarIncentivo"> Eliminar</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int IncentivoId { get; set; }
+    public Incentivos? Incentivo { get; set; } = new Incentivos();
+    public List<Tecnicos> ListTecnicos { get; set; } = new List<Tecnicos>();
+
+    List<ToastMessage> Mensaje = new List<ToastMessage>();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Incentivo!.IncentivoId = IncentivoId;
+        Incentivo = await incentivoService.Buscar(Incentivo.IncentivoId);
+        ListTecnicos = await tecnicoService.Listar(t => true);
+    }
+
+    private void MostrarMensaje(ToastType toastType, string mensaje)
+    {
+        Mensaje.Add(CreateToastMessage(toastType, mensaje));
+    }
+
+    private ToastMessage CreateToastMessage(ToastType toastType, string mensaje)
+    => new ToastMessage
+        {
+            Type = toastType,
+            Title = "Notificación",
+            HelpText = $"{DateTime.Now}",
+            Message = mensaje,
+        };
+
+    public async Task EliminarIncentivo()
+    {
+        if (IncentivoId == 0 || Incentivo == null)
+        {
+            return;
+        }
+
+        if (await incentivoService.Eliminar(IncentivoId))
+        {
+            MostrarMensaje(ToastType.Success, $"El técnico {Incentivo.Descripcion} se ha eliminado correctamente");
+            await Task.Delay(2000);
+            Volver();
+        }
+        else
+            MostrarMensaje(ToastType.Danger, "Se ha producido un error");
+    }
+
+    public void Volver()
+    {
+        Navigation.NavigateTo("/Incentivo/Index");
+    }
+}

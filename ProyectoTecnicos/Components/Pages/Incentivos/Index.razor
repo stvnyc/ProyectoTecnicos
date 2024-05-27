@@ -1,17 +1,16 @@
-﻿@page "/TipoTecnico/Index"
+﻿@page "/Incentivo/Index"
 
-@inject TiposTecnicosService tiposTecnicosService
 @inject IncentivoService incentivoService
 @inject NavigationManager Navigation
 
 @rendermode InteractiveServer
 
-<PageTitle>Tipos T&eacute;cnicos Index</PageTitle>
+<PageTitle>Incentivos Index</PageTitle>
 <div class="card shadow-lg">
     <div>
         @*Header*@
         <div class="card-header text-center">
-            <h3><strong>Listado de Tipos de T&eacute;cnicos</strong></h3>
+            <h3><strong>Listado de Incentivos</strong></h3>
         </div>
 
         <div class="card-body">
@@ -47,24 +46,28 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>TipoId</th>
+                        <th>IncentivoId</th>
+                        <th>Fecha</th>
                         <th>Descripci&oacute;n</th>
-                        <th>Monto Total</th>
+                        <th>CantidadServicios</th>
+                        <th>Monto</th>
                         <th>Ver</th>
                         <th>Editar</th>
                         <th>Eliminar</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var tiposTecnicos in TiposTecnicos)
+                    @foreach (var incentivos in Incentivos)
                     {
                         <tr>
-                            <td>@tiposTecnicos.TipoId</td>
-                            <td>@tiposTecnicos.Descripcion</td>
-                            <td>@tiposTecnicos.Incentivo</td>
-                            <td><button type="button" class="btn btn-ver bi bi-eye" @onclick="()=>Detalle(tiposTecnicos.TipoId)"></button></td>
-                            <td><button type="button" class="btn btn-editar bi bi-pencil" @onclick="()=>Editar(tiposTecnicos.TipoId)"></button></td>
-                            <td><button type="button" class="btn btn-eliminar bi bi-trash" @onclick="()=>Eliminar(tiposTecnicos.TipoId)"></button></td>
+                            <td>@incentivos.IncentivoId</td>
+                            <td>@incentivos.Fecha</td>
+                            <td>@incentivos.Descripcion</td>
+                            <td>@incentivos.CantidadServicios</td>
+                            <td>@incentivos.Monto</td>
+                            <td><button type="button" class="btn btn-ver bi bi-eye" @onclick="()=>Detalle(incentivos.IncentivoId)"></button></td>
+                            <td><button type="button" class="btn btn-editar bi bi-pencil" @onclick="()=>Editar(incentivos.IncentivoId)"></button></td>
+                            <td><button type="button" class="btn btn-eliminar bi bi-trash" @onclick="()=>Eliminar(incentivos.IncentivoId)"></button></td>
                         </tr>
                     }
                 </tbody>
@@ -73,67 +76,62 @@
 
         @*Footer*@
         <div class="card-footer">
-            <p><strong>Total de t&eacute;cnicos: @TiposTecnicos.Count()</strong></p>
+            <p><strong>Total de Incentivos: @Incentivos.Count()</strong></p>
         </div>
     </div>
 </div>
 
 @code {
-    public List<TiposTecnicos> TiposTecnicos = new List<TiposTecnicos>();
-    public List<Incentivos> Incentivos = new List<Incentivos>();
+    public List<Incentivos> Incentivos { get; set; } = new List<Incentivos>();
     private string filtro = "";
     private string valorFiltro = "";
 
     protected override async Task OnInitializedAsync()
     {
-        await tiposTecnicosService.MontoIncentivos();
-        TiposTecnicos = await tiposTecnicosService.Listar(t => true);
-        Incentivos = await incentivoService.Listar(t => true);
+        Incentivos = await incentivoService.Listar(i => true);
     }
 
     private async Task Buscar()
     {
         if (valorFiltro.Trim() != "")
         {
-            if (filtro == "id" && int.TryParse(valorFiltro, out int TipoId))
+            if (filtro == "id" && int.TryParse(valorFiltro, out int IncentivoId))
             {
-                TiposTecnicos = await tiposTecnicosService.Listar(t => t.TipoId == TipoId);
+                Incentivos = await incentivoService.Listar(i => i.IncentivoId == IncentivoId);
             }
             else if (filtro == "descripcion")
             {
-                TiposTecnicos = await tiposTecnicosService.Listar(t => t.Descripcion.ToLower().Contains(valorFiltro.ToLower()));
+                Incentivos = await incentivoService.Listar(i => i.Descripcion!.ToLower().Contains(valorFiltro.ToLower()));
             }
         }
         else
-        {
-            TiposTecnicos = await tiposTecnicosService.Listar(p => true);
-        }
+            Incentivos = await incentivoService.Listar(i => true);
     }
 
     public async Task Restablecer()
     {
         filtro = string.Empty;
         valorFiltro = string.Empty;
-        TiposTecnicos = await tiposTecnicosService.Listar(t => true);
+        Incentivos = await incentivoService.Listar(i => true);
     }
 
     public void Crear()
     {
-        Navigation.NavigateTo("/TipoTecnico/Create");
+        Navigation.NavigateTo("/Incentivo/Create");
     }
 
     public void Editar(int id)
     {
-        Navigation.NavigateTo($"/TipoTecnico/Edit/{id}");
+        Navigation.NavigateTo($"/Incentivo/Edit/{id}");
     }
 
     public void Detalle(int id)
     {
-        Navigation.NavigateTo($"/TipoTecnico/Detail/{id}");
+        Navigation.NavigateTo($"/Incentivo/Detail/{id}");
     }
 
     public void Eliminar(int id)
     {
-        Navigation.NavigateTo($"/TipoTecnico/Delete/{id}");
+        Navigation.NavigateTo($"/Incentivo/Delete/{id}");
     }
 }
